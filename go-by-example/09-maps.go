@@ -48,9 +48,51 @@ func show_map_init() {
 	fmt.Println("complex key map m2:", m2)
 }
 
+func show_map_insert() {
+	m := make(map[int]string)
+	m[1] = "first"
+	m[2] = "second"
+	m[3] = "third"
+	fmt.Println("map:", m)
+	m[1] = "一"
+	fmt.Println("map:", m)
+}
+
+func show_map_len() {
+	m := make(map[int]string)
+	m[1] = "apple"
+	m[2] = "banana"
+	m[3] = "pear"
+	fmt.Println("map:", m, "len:", len(m))
+	m[4] = "orange"
+	fmt.Println("map:", m, "len:", len(m))
+}
+
+func show_map_find() {
+	m := map[string]float64{"apple": 5.5, "banana": 3.5, "orange": 6.5}
+
+	key := "apple"
+	val, is_find := m[key]
+	fmt.Println(key, val, is_find)
+
+	key = "pear"
+	val, is_find = m[key]
+	fmt.Println(key, val, is_find)
+	if !is_find {
+		for k, v := range m {
+			fmt.Println(k, v)
+
+		}
+	}
+
+}
+
 func basic_opr() {
 	show_map_panic()
 	show_map_init()
+	show_map_insert()
+	show_map_len()
+	show_map_find()
 }
 
 func main() {
