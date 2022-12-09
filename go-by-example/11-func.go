@@ -32,7 +32,7 @@ var myPrintf = func(w io.Writer, format string, a ...interface{}) (int, error) {
 	return fmt.Fprintf(w, format, a...)
 }
 
-func main() {
+func show_func() {
 	res := plus(1, 2)
 	fmt.Println("1 + 2 = ", res)
 
@@ -50,4 +50,20 @@ func main() {
 	// 函数可以当作变量使用
 	fmt.Printf("func type: %T\n", myPrintf)
 	myPrintf(os.Stdout, "我的名字: %s\n", "Heiko")
+}
+
+func setup(task string) func() {
+	println("do some setup stuff for", task)
+	return func() {
+		println("do some teardown stuff for", task)
+	}
+}
+
+func main() {
+	show_func()
+
+	teardown := setup("demo")
+	defer teardown()
+	println("do some business stuff")
+
 }
