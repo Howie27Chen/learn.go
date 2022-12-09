@@ -59,6 +59,12 @@ func setup(task string) func() {
 	}
 }
 
+func partialTimes(factor int) func(int) int {
+	return func(value int) int {
+		return factor * value
+	}
+}
+
 func main() {
 	show_func()
 
@@ -66,4 +72,10 @@ func main() {
 	defer teardown()
 	println("do some business stuff")
 
+	timeTwo := partialTimes(2)
+	timeThree := partialTimes(3)
+	fmt.Println("time two:", timeTwo(5))
+	fmt.Println("time two:", timeTwo(6))
+	fmt.Println("time three:", timeThree(5))
+	fmt.Println("time three:", timeThree(6))
 }
