@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+	"os"
+)
 
 func plus(a int, b int) int {
 	return a + b
@@ -22,6 +26,12 @@ func show_var_param(sl []int, elements ...int) []int {
 	return sl
 }
 
+// 函数可以作为一个变量
+var myPrintf = func(w io.Writer, format string, a ...interface{}) (int, error) {
+	fmt.Println("myPrint")
+	return fmt.Fprintf(w, format, a...)
+}
+
 func main() {
 	res := plus(1, 2)
 	fmt.Println("1 + 2 = ", res)
@@ -37,5 +47,7 @@ func main() {
 	// 可变参数可以是多个
 	sl = show_var_param(sl, 1, 2, 3)
 	fmt.Println("after var 1, 2, 3: sl = ", sl)
-
+	// 函数可以当作变量使用
+	fmt.Printf("func type: %T\n", myPrintf)
+	myPrintf(os.Stdout, "我的名字: %s\n", "Heiko")
 }
