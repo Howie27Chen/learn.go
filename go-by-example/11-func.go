@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -65,6 +66,59 @@ func partialTimes(factor int) func(int) int {
 	}
 }
 
+func show_create_error(i int) {
+	err := errors.New("your first demo error")
+	errWithCtx := fmt.Errorf("index %d is out of bounds", i)
+	fmt.Println(err.Error())
+	fmt.Println(errWithCtx.Error())
+}
+
+func compare_err_link() {
+	errSentinel := errors.New("the underlying sentinel error")
+
+	err1 := fmt.Errorf("wrap sentinel: %w", errSentinel)
+	err2 := fmt.Errorf("wrap err1: %w", err1)
+
+	fmt.Println("errSentinel:", errSentinel)
+	fmt.Println("err1:       ", err1)
+	fmt.Println("err2:       ", err2)
+	println("err2 == errSentinel? ->", err2 == errSentinel)
+
+	if errors.Is(err2, errSentinel) {
+		println("err2 is sentinel")
+	} else {
+		println("err2 is sentinel")
+	}
+}
+
+type MyError struct {
+	e string
+}
+
+func (e *MyError) Error() string {
+	return e.e
+}
+
+func find_err_link() {
+
+	var err = &MyError{"MyError error demo"}
+	err1 := fmt.Errorf("wrap err: %w", err)
+	err2 := fmt.Errorf("wrap err1: %w", err1)
+	var e *MyError
+	fmt.Println("err:  ", err)
+	fmt.Println("err1: ", err1)
+	fmt.Println("err2: ", err2)
+	fmt.Println("e:    ", e)
+
+	if errors.As(err2, &e) {
+		println("MyError is on the chain of err2")
+		fmt.Println("err == e?", err == e)
+		fmt.Println("e:    ", e)
+		return
+	}
+	println("MyError is not on the chain of err2")
+}
+
 func main() {
 	show_func()
 
@@ -78,4 +132,8 @@ func main() {
 	fmt.Println("time two:", timeTwo(6))
 	fmt.Println("time three:", timeThree(5))
 	fmt.Println("time three:", timeThree(6))
+
+	show_create_error(8)
+	compare_err_link()
+	find_err_link()
 }
