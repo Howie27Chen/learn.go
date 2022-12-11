@@ -34,6 +34,42 @@ func show_basic_method() {
 	p.M(4)
 }
 
+// go 方法的本质是 以 recerver 参数作为第一个参数的普通函数
+// func (t T)Method() <=> func Func(t T)
+// func (t *T)Method() <=> func Func(t *T)
+type Receiver struct {
+	i int
+}
+
+// Receiver 类型的接口并不会改变原有的实例
+func (r Receiver) FakeSet(i int) {
+	fmt.Println("FakeSet i=", i)
+	r.i = i
+}
+
+// *Receiver 类型的接口的方法会改变原有的实例
+func (r *Receiver) RealSet(i int) {
+	fmt.Println("RealSet i=", i)
+	r.i = i
+}
+
+// 一般不需要改变原有实例的，我们都采用 T 方式而不是 *T 指针的方式进行传递
+func (r Receiver) Get() int {
+	return r.i
+}
+
+func show_method_ptr() {
+	var instance Receiver
+
+	fmt.Println("receiver i = ", instance.i)
+	instance.FakeSet(20)
+	fmt.Println("receiver i = ", instance.i)
+	instance.RealSet(30)
+	fmt.Println("receiver i = ", instance.i)
+	fmt.Println("receiver Get ", instance.Get())
+}
+
 func main() {
 	show_basic_method()
+	show_method_ptr()
 }
