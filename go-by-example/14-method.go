@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 // 14-method.go
 // go 方法的声明形式
@@ -69,7 +72,54 @@ func show_method_ptr() {
 	fmt.Println("receiver Get ", instance.Get())
 }
 
+// go 中任何一个类型都有自己的方法集合，或者说方法集合是 Go 类型的一个属性
+
+// dumpMethodSet 检查类型的方法集合
+func dumpMethodSet(i interface{}) {
+
+	dynamicType := reflect.TypeOf(i)
+
+	if dynamicType == nil {
+		fmt.Println("there is no dynamic type")
+		return
+	}
+
+	n := dynamicType.NumMethod()
+	if n == 0 {
+		fmt.Printf("%s's method set is empty.\n", dynamicType)
+		return
+	}
+
+	fmt.Printf("%s's method set: \n", dynamicType)
+	for i := 0; i < n; i++ {
+		fmt.Println("-", dynamicType.Method(i).Name)
+	}
+	fmt.Printf("\n")
+
+}
+
+type MethodSet struct{}
+
+func (m MethodSet) Method1()  {}
+func (m MethodSet) Method2()  {}
+func (m *MethodSet) Method3() {}
+func (m *MethodSet) Method4() {}
+
+func show_method_set() {
+
+	// Go 原生类型没有定义方法，其方法集合都是空的
+	var a int
+	dumpMethodSet(a)
+	dumpMethodSet(&a)
+
+	var set MethodSet
+	dumpMethodSet(set)
+	dumpMethodSet(&set)
+
+}
+
 func main() {
 	show_basic_method()
 	show_method_ptr()
+	show_method_set()
 }
