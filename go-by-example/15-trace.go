@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"runtime"
 	"strconv"
+	"sync"
 )
 
 var gorountineSpace = []byte("goroutine ")
@@ -38,7 +39,7 @@ func Trace() func() {
 	name := fn.Name()
 	gid := curGoroutineID()
 
-	fmt.Sprintf("g[%05d]: enter: [%s]\n", gid, name)
+	fmt.Printf("g[%05d]: enter: [%s]\n", gid, name)
 	return func() {
 		fmt.Printf("g[%05d]: exit: [%s]\n", gid, name)
 	}
@@ -54,7 +55,51 @@ func bar() {
 	defer Trace()()
 }
 
+func A1() {
+	defer Trace()()
+	B1()
+}
+
+func B1() {
+	defer Trace()()
+	C1()
+}
+
+func C1() {
+	defer Trace()()
+	D()
+}
+
+func D() {
+	defer Trace()()
+}
+
+func A2() {
+	defer Trace()()
+	B2()
+}
+
+func B2() {
+	defer Trace()()
+	C2()
+}
+
+func C2() {
+	defer Trace()()
+	D()
+}
+
 func main() {
 	defer Trace()()
 	foo()
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		A2()
+		wg.Done()
+	}()
+
+	A1()
+	wg.Wait()
+
 }
