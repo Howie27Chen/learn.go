@@ -28,6 +28,18 @@ func curGoroutineID() uint64 {
 	return n
 }
 
+func printTrace(id uint64, name, arrow string, indent int) {
+	indents := ""
+	for i := 0; i < indent; i++ {
+		indents += " "
+	}
+	fmt.Printf("g[%5d]: %s%s%s\n", id, indents, arrow, name)
+
+}
+
+var mu sync.Mutex
+var m = make(map[uint64]int)
+
 func Trace() func() {
 	pc, _, _, ok := runtime.Caller(1)
 
@@ -39,9 +51,18 @@ func Trace() func() {
 	name := fn.Name()
 	gid := curGoroutineID()
 
-	fmt.Printf("g[%05d]: enter: [%s]\n", gid, name)
+	mu.Lock()
+	indents := m[gid]
+	m[gid] = indents + 1
+	mu.Unlock()
+
+	printTrace(gid, name, "->", indents+1)
 	return func() {
-		fmt.Printf("g[%05d]: exit: [%s]\n", gid, name)
+		mu.Lock()
+		indents := m[gid]
+		m[gid] = indents - 1
+		mu.Unlock()
+		printTrace(gid, name, "<-", indents)
 	}
 
 }
