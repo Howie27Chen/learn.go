@@ -11,6 +11,7 @@ type T int
 func (T) M1() {
 	println("T's M1")
 }
+
 func interface_basic() {
 	var t T
 	var i interface{} = t
@@ -30,6 +31,40 @@ func interface_basic() {
 	// v2 = 13 // will panic for v2 is nil, not the type of MyInterface
 }
 
+type QuackaleAnimal interface {
+	Quack()
+}
+
+type Duck struct{}
+
+func (Duck) Quack() {
+	println("duck quack!")
+}
+
+type Dog struct{}
+
+func (Dog) Quack() {
+	println("dog quack!")
+}
+
+type Bird struct{}
+
+func (Bird) Quack() {
+	println("bird quack!")
+}
+
+func AnimalQuackInForest(animal QuackaleAnimal) {
+	animal.Quack()
+}
+
+func interface_dynamic() {
+	animals := []QuackaleAnimal{new(Duck), new(Bird), new(Dog)} // Duck, Bird 和 Dog 没什么联系，但是都表现出了 QuackableAnimal 的特性
+	for _, animal := range animals {
+		AnimalQuackInForest(animal)
+	}
+}
+
 func main() {
 	interface_basic()
+	interface_dynamic()
 }
