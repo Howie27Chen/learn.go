@@ -151,6 +151,36 @@ func printEmptyInterfaceAndNoneEmptyInterface() {
 	println("err == eif", err == eif)
 }
 
+// Todo 7: 接口的 “装箱”操作
+
+type TBox struct {
+	n int
+	s string
+}
+
+func (TBox) M1() {}
+func (TBox) M2() {}
+
+type NonEmptyInterface interface {
+	M1()
+	M2()
+}
+
+func inbox_interface() {
+	println("================ Here is inbox_interface() ================")
+	var t = TBox{
+		n: 17,
+		s: "hello, interface",
+	}
+	var ei interface{}
+	ei = t
+
+	var i NonEmptyInterface
+	i = t
+	fmt.Println(ei)
+	fmt.Println(i)
+}
+
 func main() {
 	interface_basic()
 	interface_dynamic()
@@ -159,4 +189,6 @@ func main() {
 	printEmptyInterface()
 	printNonEmptyInterface()
 	printEmptyInterfaceAndNoneEmptyInterface()
+
+	inbox_interface() // 使用 go tool compile -S *.go > *.s 可以生成汇编代码
 }
