@@ -2,6 +2,8 @@ package main
 
 import "fmt"
 
+// Todo 1: 接口的基本使用
+
 type MyInterface interface {
 	M1()
 }
@@ -31,6 +33,8 @@ func interface_basic() {
 	// v2 = 13 // will panic for v2 is nil, not the type of MyInterface
 }
 
+// Todo 2: 接口的静态(类型)和动态(调用)特性
+
 type QuackaleAnimal interface {
 	Quack()
 }
@@ -58,17 +62,20 @@ func AnimalQuackInForest(animal QuackaleAnimal) {
 }
 
 func interface_dynamic() {
+	println("================ Here is interface_dynamic() ================")
 	animals := []QuackaleAnimal{new(Duck), new(Bird), new(Dog)} // Duck, Bird 和 Dog 没什么联系，但是都表现出了 QuackableAnimal 的特性
 	for _, animal := range animals {
 		AnimalQuackInForest(animal)
 	}
 }
 
+// Todo 3: nil 接口类型变量
+
 func printNilInterface() {
 	println("================ Here is printnilinterface() ================")
 	// nil 接口变量
 	var i interface{}      // 空接口类型
-	var err error          // 非空接口类型
+	var err error          // 非空接口类型，-> 未赋初值的接口，也是 nil
 	println("i = ", i)     // (e._type, e.data)
 	println("err = ", err) // (i.tab, i.data)
 	println("i == nil", i == nil)
@@ -76,6 +83,7 @@ func printNilInterface() {
 	println("i == err", i == err)
 }
 
+// Todo 4: 空接口类型变量
 func printEmptyInterface() {
 	println("================ Here is printEmptyInterface() ================")
 	var eif1 interface{} // 空接口类型
@@ -98,12 +106,57 @@ func printEmptyInterface() {
 	println("eif1:", eif1)
 	println("eif2:", eif2)
 	println("eif1 == eif2", eif1 == eif2) // false
+}
 
+// Todo 5: 非空接口类型变量
+
+// type T int
+func (t T) Error() string {
+	return "bad errror"
+}
+
+func printNonEmptyInterface() {
+	println("================ Here is printNonEmptyInterface() ================")
+	var err1 error
+	var err2 error
+	err1 = (*T)(nil)
+	println("err1: ", err1)
+	println("err1 = nil", err1 == nil)
+
+	err1 = T(5)
+	err2 = T(6)
+	println("err1: ", err1)
+	println("err2: ", err2)
+	println("err1 = err2", err1 == err2)
+
+	err2 = fmt.Errorf("%d\n", 5)
+	println("err1: ", err1)
+	println("err2: ", err2)
+	println("err1 = err2", err1 == err2)
+}
+
+// Todo 6: 空接口类型与非空接口类型变量的等值比较
+
+func printEmptyInterfaceAndNoneEmptyInterface() {
+	println("================ Here is printEmptyInterfaceAndNoneEmptyInterface() ================")
+	var eif interface{} = T(5)
+	var err error = T(5)
+	println("eif:", eif)
+	println("err:", err)
+	println("eif == err", eif == err)
+
+	err = T(6)
+	println("eif:", eif)
+	println("err:", err)
+	println("err == eif", err == eif)
 }
 
 func main() {
-	//interface_basic()
-	//interface_dynamic()
+	interface_basic()
+	interface_dynamic()
+
 	printNilInterface()
 	printEmptyInterface()
+	printNonEmptyInterface()
+	printEmptyInterfaceAndNoneEmptyInterface()
 }
