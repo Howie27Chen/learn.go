@@ -64,7 +64,46 @@ func interface_dynamic() {
 	}
 }
 
+func printNilInterface() {
+	println("================ Here is printnilinterface() ================")
+	// nil 接口变量
+	var i interface{}      // 空接口类型
+	var err error          // 非空接口类型
+	println("i = ", i)     // (e._type, e.data)
+	println("err = ", err) // (i.tab, i.data)
+	println("i == nil", i == nil)
+	println("err == nil", err == nil)
+	println("i == err", i == err)
+}
+
+func printEmptyInterface() {
+	println("================ Here is printEmptyInterface() ================")
+	var eif1 interface{} // 空接口类型
+	var eif2 interface{} // 空接口类型
+	var n, m int = 17, 18
+
+	eif1 = n
+	eif2 = m
+
+	println("eif1:", eif1)
+	println("eif2:", eif2)
+	println("eif1 == eif2", eif1 == eif2) // false
+
+	eif2 = 17 // eif1 var -> 17
+	println("eif1:", eif1)
+	println("eif2:", eif2)
+	println("eif1 == eif2", eif1 == eif2) // true
+
+	eif2 = int64(17) // eif1 type -> int
+	println("eif1:", eif1)
+	println("eif2:", eif2)
+	println("eif1 == eif2", eif1 == eif2) // false
+
+}
+
 func main() {
-	interface_basic()
-	interface_dynamic()
+	//interface_basic()
+	//interface_dynamic()
+	printNilInterface()
+	printEmptyInterface()
 }
